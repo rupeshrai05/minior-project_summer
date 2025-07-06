@@ -1,0 +1,164 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merge Unsorted Linked Lists and Sort in C++</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #3a6186, #89253e);
+      color: #fff;
+      font-family: 'Roboto Mono', monospace;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .code-card, .explanation-card, .input-card {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+    input, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: none;
+      margin: 0.5rem 0;
+    }
+    button {
+      background-color: #fff;
+      color: #333;
+      cursor: pointer;
+    }
+    #output {
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔧 Merge Two Unsorted Linked Lists and Sort</h1>
+
+    <div class="explanation-card">
+      <h2>🔍 Explanation</h2>
+      <p>This C++ program first takes two unsorted singly linked lists (entered by user), sorts them individually, and then merges them into one final sorted linked list.</p>
+    </div>
+
+    <div class="input-card">
+      <h2>📥 Enter Lists</h2>
+      <label for="list1">List 1 (comma-separated):</label><br />
+      <input type="text" id="list1" placeholder="e.g. 5,1,4" /><br />
+      <label for="list2">List 2 (comma-separated):</label><br />
+      <input type="text" id="list2" placeholder="e.g. 2,6,3" /><br />
+      <button onclick="processInput()">Merge and Sort</button>
+      <div id="output"></div>
+    </div>
+
+    <div class="code-card">
+      <h2>🧾 C++ Code</h2>
+      <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+Node* createListFromVector(vector&lt;int&gt;& vec) {
+    if (vec.empty()) return nullptr;
+    Node* head = new Node(vec[0]);
+    Node* current = head;
+    for (size_t i = 1; i &lt; vec.size(); ++i) {
+        current-&gt;next = new Node(vec[i]);
+        current = current-&gt;next;
+    }
+    return head;
+}
+
+void printList(Node* head) {
+    while (head) {
+        cout &lt;&lt; head-&gt;data &lt;&lt; " -&gt; ";
+        head = head-&gt;next;
+    }
+    cout &lt;&lt; "NULL" &lt;&lt; endl;
+}
+
+Node* mergeSortedLists(Node* l1, Node* l2) {
+    Node dummy(0);
+    Node* tail = &dummy;
+
+    while (l1 &amp;&amp; l2) {
+        if (l1-&gt;data &lt; l2-&gt;data) {
+            tail-&gt;next = l1;
+            l1 = l1-&gt;next;
+        } else {
+            tail-&gt;next = l2;
+            l2 = l2-&gt;next;
+        }
+        tail = tail-&gt;next;
+    }
+    tail-&gt;next = l1 ? l1 : l2;
+    return dummy.next;
+}
+
+int main() {
+    vector&lt;int&gt; list1 = {5, 1, 4};
+    vector&lt;int&gt; list2 = {2, 6, 3};
+
+    sort(list1.begin(), list1.end());
+    sort(list2.begin(), list2.end());
+
+    Node* l1 = createListFromVector(list1);
+    Node* l2 = createListFromVector(list2);
+
+    cout &lt;&lt; "Sorted List 1: ";
+    printList(l1);
+    cout &lt;&lt; "Sorted List 2: ";
+    printList(l2);
+
+    Node* merged = mergeSortedLists(l1, l2);
+    cout &lt;&lt; "Merged Sorted List: ";
+    printList(merged);
+
+    return 0;
+}</code></pre>
+    </div>
+  </div>
+
+  <script>
+    function processInput() {
+      const input1 = document.getElementById("list1").value;
+      const input2 = document.getElementById("list2").value;
+
+      let arr1 = input1.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+      let arr2 = input2.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+
+      arr1.sort((a, b) => a - b);
+      arr2.sort((a, b) => a - b);
+
+      const merged = [...arr1, ...arr2].sort((a, b) => a - b);
+      const output = merged.map(n => `<span style='margin-right:10px;'>${n}</span>`).join("→ ");
+
+      document.getElementById("output").innerHTML = `<h3>✅ Merged Sorted List:</h3><p>${output} → NULL</p>`;
+    }
+  </script>
+</body>
+</html>
